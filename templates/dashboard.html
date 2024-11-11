@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0">
+</head>
+<body>
+    <h2>Welcome, {{ session['username'] }}</h2>
+    <p>Role: {{ role }}</p>
+
+    {% if role == 'admin' %}
+        <h3>Admin Dashboard</h3>
+        <ul>
+            <li><a href="#">Manage Water Sources</a></li>
+            <li><a href="#">Water Allocation Management</a></li>
+            <li><a href="#">Reports & Analytics</a></li>
+        </ul>
+    {% elif role == 'officer' %}
+        <h3>Officer Dashboard</h3>
+        <ul>
+            <li><a href="#">Manage Water Levels</a></li>
+            <li><a href="#">View Sector Allocations</a></li>
+            <li><a href="#">View Reports</a></li>
+        </ul>
+    {% elif role == 'customer' %}
+        <h3>Customer Dashboard</h3>
+        <ul>
+            <li><a href="#">View Billing</a></li>
+            <li><a href="#">Check Water Allocation</a></li>
+        </ul>
+    {% endif %}
+
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>
