@@ -26,7 +26,7 @@
     {% elif role == 'customer' %}
         <h3>Customer Dashboard</h3>
         <ul>
-            <li><a href="#">View Billing</a></li>
+            <li>    <a href="{{ url_for('bills') }}">View Your Bills</a>
             <li><a href="#">Check Water Allocation</a></li>
         </ul>
     {% endif %}

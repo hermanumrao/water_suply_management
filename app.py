@@ -24,6 +24,13 @@ def init_db():
     
     conn.close()
 
+def get_customer_bills(customer_id):
+    conn = get_db_connection()
+    bills = conn.execute('SELECT * FROM Bills WHERE customer_id = ?', (customer_id,)).fetchall()
+    conn.close()
+    return bills
+
+
 # Database connection helper
 def get_db_connection():
     conn = sqlite3.connect('database.db')
@@ -79,6 +86,17 @@ def dashboard():
 
     role = session.get('role')
     return render_template('dashboard.html', role=role)
+
+@app.route('/bills')
+def bills():
+    if 'user_id' not in session or session['role'] != 'customer':
+        return redirect(url_for('login'))
+    
+    customer_id = session['user_id']
+    bills = get_customer_bills(customer_id)
+    
+    return render_template('bills.html', bills=bills)
+
 
 # Logout route
 @app.route('/logout')
