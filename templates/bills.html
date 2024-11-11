@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bills</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Bill Usage Log</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Bill ID</th>
+                <th>Bill Date</th>
+                <th>Amount Due</th>
+                <th>Due Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bill in bills %}
+                <tr>
+                    <td>{{ bill['bill_id'] }}</td>
+                    <td>{{ bill['bill_date'] }}</td>
+                    <td>{{ bill['amount_due'] }}</td>
+                    <td>{{ bill['due_date'] }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No bills found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

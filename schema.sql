@@ -35,10 +35,12 @@ CREATE TABLE Locality (
 CREATE TABLE Bills (
     bill_id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER,
-    payments_due REAL,
-    due_date DATE,
-    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+    bill_date TEXT,
+    amount_due REAL,
+    due_date TEXT,
+    FOREIGN KEY (customer_id) REFERENCES Users(user_id)
 );
+
 
 -- Table for officer information
 CREATE TABLE Officer (
