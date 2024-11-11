@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0">
 </head>
 <body>
+    <div class="container">
     <h2>Welcome, {{ session['username'] }}</h2>
     <p>Role: {{ role }}</p>
 
@@ -32,5 +33,6 @@
     {% endif %}
 
     <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
 </body>
 </html>
