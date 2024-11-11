@@ -37,3 +37,166 @@ button {
     border-radius: 3px;
     cursor: pointer;
 }
+
+/* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Container styles */
+.container {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+/* Title styles */
+h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #4a90e2;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin: 20px 0 10px;
+    color: #333;
+}
+
+/* Navigation list styles */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 1px solid #4a90e2;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+a:hover {
+    background-color: #4a90e2;
+    color: #fff;
+}
+
+/* Logout button */
+.logout-btn {
+    margin-top: 20px;
+    color: #e94e77;
+    border: 1px solid #e94e77;
+}
+
+.logout-btn:hover {
+    background-color: #e94e77;
+    color: #fff;
+}
+
+/* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container styles */
+.container {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+    border-radius: 10px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Title and role styles */
+h2 {
+    font-size: 1.8em;
+    color: #4a90e2;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1em;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin: 15px 0;
+    color: #333;
+}
+
+/* Navigation list styles */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a {
+    display: inline-block;
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: 1px solid #4a90e2;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    background-color: #4a90e2;
+    color: #fff;
+}
+
+/* Logout button */
+.logout-btn {
+    margin-top: 20px;
+    color: #e94e77;
+    border: 1px solid #e94e77;
+}
+
+.logout-btn:hover {
+    background-color: #e94e77;
+    color: #fff;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
