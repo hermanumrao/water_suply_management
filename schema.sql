@@ -11,12 +11,12 @@ CREATE TABLE Users (
 -- Table for customer information
 CREATE TABLE Customer (
     customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userid INTEGER,
     name TEXT NOT NULL,
     sector_no INTEGER,
-    officer_id INTEGER,
     reservoir_id INTEGER,
     connections INTEGER,
-    FOREIGN KEY (officer_id) REFERENCES Officer(officer_id),
+    FOREIGN KEY (userid) REFERENCES Users(user_id),
     FOREIGN KEY (reservoir_id) REFERENCES Reservoir(reservoir_id)
 );
 
@@ -38,6 +38,14 @@ CREATE TABLE Bills (
     bill_date TEXT,
     amount_due REAL,
     due_date TEXT,
+    FOREIGN KEY (customer_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Meter_Readings (
+    reading_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_id INTEGER,
+    reading REAL,
+    reading_date DATE,
     FOREIGN KEY (customer_id) REFERENCES Users(user_id)
 );
 
@@ -86,6 +94,4 @@ CREATE INDEX idx_reports_date ON Reports(date);
 
 -- Optional: Insert default admin user
 INSERT INTO Users (username, password, role, name, contact_info) 
-VALUES ('admin', 'password', 'admin', 'Administrator', 'admin@example.com'),
-('officer1', 'password', 'officer', 'officer1', 'officer1@example.com'),
-('cust1', 'password', 'customer', 'cust1', 'cust1@example.com');
+VALUES ('admin', 'password', 'admin', 'Administrator', 'admin@example.com');
