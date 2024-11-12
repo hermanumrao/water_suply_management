@@ -16,12 +16,13 @@
             <li><a href="#">Manage Water Sources</a></li>
             <li><a href="#">Water Allocation Management</a></li>
             <li><a href="#">Reports & Analytics</a></li>
+            <li><a href="{{ url_for('register_officer') }}">Register New Officer</a></li>
         </ul>
     {% elif role == 'officer' %}
         <h3>Officer Dashboard</h3>
         <ul>
-            <li><a href="#">Manage Water Levels</a></li>
-            <li><a href="#">View Sector Allocations</a></li>
+            <li><a href="{{ url_for('register_customer') }}">Register New Customer</a></li>            
+            <li><a href="{{ url_for('meter_reading', customer_id=1) }}">Enter Meter Reading for Customer</a></li>
             <li><a href="#">View Reports</a></li>
         </ul>
     {% elif role == 'customer' %}
