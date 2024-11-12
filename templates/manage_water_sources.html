@@ -10,7 +10,7 @@
     <h2>Manage Water Sources</h2>
     
     <!-- Button to Add New Water Source -->
-    <a href="{{ url_for('add_water_source') }}" class="button" >Add New Water Source</a><br><br>
+    <a href="{{ url_for('add_water_source') }}">Add New Water Source</a><br><br>
 
     <ul>
         {% for source in water_sources %}
@@ -30,7 +30,7 @@
     
     <!-- Back Button -->
     <br>
-    <a href="{{ url_for('dashboard') }}" class="back-button" >Back to Dashboard</a>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
     </div>
 </body>
 </html>
