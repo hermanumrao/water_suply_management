@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Water Allocations</title>
+</head>
+<body>
+    <h2>Manage Water Allocations</h2>
+    
+    <!-- Button to Add New Water Allocation -->
+    <a href="{{ url_for('add_water_allocation') }}">Add New Water Allocation</a><br><br>
+
+    <ul>
+        {% for allocation in allocations %}
+            <li>
+                Sector: {{ allocation['sector_no'] }}
+                - Allocation Amount: {{ allocation['allocation_amount'] }} liters
+                - Date: {{ allocation['date'] }}
+                - Priority: {{ allocation['priority'] }}
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Back Button -->
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

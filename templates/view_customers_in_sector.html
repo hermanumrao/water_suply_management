@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Customers in Sector</title>
+</head>
+<body>
+    <h2>Customers in My Sector</h2>
+    
+    <ul>
+        {% for customer in customers %}
+            <li>
+                Customer Name: {{ customer['name'] }} - Sector: {{ customer['sector_no'] }}
+                <a href="{{ url_for('fill_meter_reading', customer_id=customer['customer_id']) }}">Fill Meter Reading</a>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Back Button -->
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

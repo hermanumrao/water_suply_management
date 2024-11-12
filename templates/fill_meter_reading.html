@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fill Meter Reading</title>
+</head>
+<body>
+    <h2>Fill Meter Reading for {{ customer['name'] }}</h2>
+    
+    <form method="POST" action="{{ url_for('fill_meter_reading', customer_id=customer['customer_id']) }}">
+        <label for="meter_reading">Meter Reading (liters):</label>
+        <input type="number" id="meter_reading" name="meter_reading" required><br><br>
+        
+        <label for="reading_date">Reading Date:</label>
+        <input type="date" id="reading_date" name="reading_date" required><br><br>
+        
+        <button type="submit">Submit Meter Reading</button>
+    </form>
+    
+    <!-- Back Button -->
+    <br>
+    <a href="{{ url_for('view_customers_in_sector') }}">Back to Customer List</a>
+</body>
+</html>

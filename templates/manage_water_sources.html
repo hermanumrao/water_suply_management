@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Water Sources</title>
+</head>
+<body>
+    <h2>Manage Water Sources</h2>
+    
+    <!-- Button to Add New Water Source -->
+    <a href="{{ url_for('add_water_source') }}">Add New Water Source</a><br><br>
+
+    <ul>
+        {% for source in water_sources %}
+            <li>
+                {{ source['name'] }} - Water Level: {{ source['water_level'] }} liters
+                - Capacity: {{ source['capacity'] }} liters
+                - Location: {{ source['location'] }}
+                <a href="{{ url_for('edit_water_source', reservoir_id=source['reservoir_id']) }}">Edit</a>
+                
+                <!-- Form for deleting the water source -->
+                <form method="POST" action="{{ url_for('delete_water_source', reservoir_id=source['reservoir_id']) }}" style="display: inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Back Button -->
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

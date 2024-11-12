@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Water Allocation</title>
+</head>
+<body>
+    <h2>Add New Water Allocation</h2>
+    
+    <form method="POST" action="{{ url_for('add_water_allocation') }}">
+        <label for="sector_no">Sector No:</label>
+        <input type="number" id="sector_no" name="sector_no" required><br><br>
+        
+        <label for="allocation_amount">Allocation Amount (liters):</label>
+        <input type="number" id="allocation_amount" name="allocation_amount" required><br><br>
+        
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+        
+        <label for="priority">Priority:</label>
+        <select id="priority" name="priority">
+            <option value="residential">Residential</option>
+            <option value="agriculture">Agriculture</option>
+            <option value="industry">Industry</option>
+        </select><br><br>
+        
+        <button type="submit">Add Water Allocation</button>
+    </form>
+    
+    <!-- Back Button -->
+    <br>
+    <a href="{{ url_for('manage_water_allocations') }}">Back to Water Allocations Management</a>
+</body>
+</html>

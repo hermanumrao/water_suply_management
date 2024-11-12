@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Water Source</title>
+</head>
+<body>
+    <h2>Add New Water Source</h2>
+    
+    <form method="POST" action="{{ url_for('add_water_source') }}">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="water_level">Water Level (liters):</label>
+        <input type="number" id="water_level" name="water_level" required><br><br>
+        
+        <label for="capacity">Capacity (liters):</label>
+        <input type="number" id="capacity" name="capacity" required><br><br>
+        
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br><br>
+        
+        <button type="submit">Add Water Source</button>
+    </form>
+    
+    <!-- Back Button -->
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>
