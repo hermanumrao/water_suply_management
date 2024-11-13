@@ -107,16 +107,29 @@ def login():
             session['user_id'] = user['user_id']
             session['username'] = user['username']
             session['role'] = user['role']
+        
+        if role == 'officer':
+        # Fetch and store sector_no for officer using a nested query
+            officer = conn.execute('''
+                SELECT sector_no 
+                FROM Officer 
+                WHERE name = (
+                    SELECT name 
+                    FROM Users 
+                    WHERE user_id = ?
+                )
+            ''', (user['user_id'],)).fetchone()
+            session['sector_no'] = officer['sector_no'] if officer else None
 
-            if role == 'officer':
-                # Fetch and store sector_no for officer
-                officer = conn.execute('SELECT sector_no FROM Officer WHERE name = ?', (user['name'],)).fetchone()
-                session['sector_no'] = officer['sector_no'] if officer else None
-
-            elif role == 'customer':
-                # Retrieve and store customer_id for customer
-                customer = conn.execute('SELECT customer_id FROM Customer WHERE userid = ?', (user['user_id'],)).fetchone()
-                session['customer_id'] = customer['customer_id'] if customer else None
+        elif role == 'customer':
+        # Retrieve and store customer_id for customer using a join
+            customer = conn.execute('''
+                SELECT Customer.customer_id 
+                FROM Customer 
+                JOIN Users ON Customer.userid = Users.user_id 
+                WHERE Users.user_id = ?
+            ''', (user['user_id'],)).fetchone()
+            session['customer_id'] = customer['customer_id'] if customer else None
 
             conn.close()
             return redirect(url_for('dashboard'))
