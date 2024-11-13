@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Meter Readings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
     <h2>Your Meter Readings</h2>
 
     {% if readings %}
@@ -26,5 +28,6 @@
 
     <br>
     <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>
 </body>
 </html>

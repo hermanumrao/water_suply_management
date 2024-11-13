@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Fill Meter Reading</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
     <h2>Fill Meter Reading for {{ customer['name'] }}</h2>
     
     <form method="POST" action="{{ url_for('fill_meter_reading', customer_id=customer['customer_id']) }}">
@@ -20,5 +22,6 @@
     <!-- Back Button -->
     <br>
     <a href="{{ url_for('view_customers_in_sector') }}">Back to Customer List</a>
+    </div>
 </body>
 </html>
