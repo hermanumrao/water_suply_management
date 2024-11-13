@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>View Customers in Sector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
     <h2>Customers in My Sector</h2>
     
     <ul>
@@ -19,5 +21,6 @@
     <!-- Back Button -->
     <br>
     <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>
 </body>
 </html>

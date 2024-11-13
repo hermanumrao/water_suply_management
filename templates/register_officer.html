@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Register Officer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
     <h2>Register New Officer</h2>
     <form method="POST">
         <label for="username">Username:</label>
@@ -24,5 +26,6 @@
 
     <br>
     <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>
 </body>
 </html>
