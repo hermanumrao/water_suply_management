@@ -21,15 +21,14 @@
     {% elif role == 'officer' %}
         <h3>Officer Dashboard</h3>
         <ul>
-            <!-- <li><a href="{{ url_for('register_customer') }}">Register New Customer</a></li>             -->
-            <!-- <li><a href="{{ url_for('meter_reading', customer_id=1) }}">Enter Meter Reading for Customer</a></li> -->
-            <li><a href="{{ url_for('view_customers_in_sector') }}">View Customers in My Sector</a></li>
+            <li><a href="{{ url_for('register_customer') }}">Register New Customer</a></li>            
+            <li><a href="{{ url_for('view_customers_in_sector') }}">add meter readings</a></li>
         </ul>
     {% elif role == 'customer' %}
         <h3>Customer Dashboard</h3>
         <ul>
-            <li>    <a href="{{ url_for('bills') }}">View Your Bills</a>
-            <li><a href="#">Check Water Allocation</a></li>
+            <li><a href="{{ url_for('bills') }}">Check Bills</a></li>
+            <li><a href="{{ url_for('meter_readings') }}">View Meter Readings</a></li>
         </ul>
     {% endif %}
 

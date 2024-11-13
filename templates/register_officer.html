@@ -3,36 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Register Officer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
-
 <body>
-    <div class="container">
-    <h2>Register Officer</h2>
-    
+    <h2>Register New Officer</h2>
     <form method="POST">
-        <label>Username</label>
-        <input type="text" name="username" required><br>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
 
-        <label>Password</label>
-        <input type="password" name="password" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
 
-        <label>Name</label>
-        <input type="text" name="name" required><br>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
 
-        <label>Contact Info</label>
-        <input type="text" name="contact_info" required><br>
-
-        <label>Sector Number</label>
-        <input type="number" name="sector_no" required><br>
+        <label for="sector_no">Sector Number:</label>
+        <input type="number" id="sector_no" name="sector_no" required><br>
 
         <button type="submit">Register Officer</button>
     </form>
-    
-    <!-- Back Button -->
+
     <br>
     <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
-    </div>
 </body>
-
+</html>

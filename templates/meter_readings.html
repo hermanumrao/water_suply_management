@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meter Readings</title>
+</head>
+<body>
+    <h2>Your Meter Readings</h2>
+
+    {% if readings %}
+        <table>
+            <tr>
+                <th>Reading Date</th>
+                <th>Meter Reading</th>
+            </tr>
+            {% for reading in readings %}
+            <tr>
+                <td>{{ reading['reading_date'] }}</td>
+                <td>{{ reading['meter_reading'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No meter readings found.</p>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

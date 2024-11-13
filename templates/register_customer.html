@@ -1,24 +1,37 @@
-<form method="POST">
-    <label>Username</label>
-    <input type="text" name="username" required><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Customer</title>
+</head>
+<body>
+    <h2>Register New Customer</h2>
+    <form method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
 
-    <label>Password</label>
-    <input type="password" name="password" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
 
-    <label>Name</label>
-    <input type="text" name="name" required><br>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
 
-    <label>Contact Info</label>
-    <input type="text" name="contact_info" required><br>
+        <label for="contact_info">Contact Info (Phone/Email):</label>
+        <input type="text" id="contact_info" name="contact_info" required><br>
 
-    <label>sector number</label>
-    <input type="number" name="sector_no" required><br>
+        <label for="sector_no">Sector Number:</label>
+        <input type="number" id="sector_no" name="sector_no" required><br>
 
-    <label>number of connections</label>
-    <input type="number" name="connections" required><br>
+        <label for="reservoir_id">Reservoir Id:</label>
+        <input type="number" id="reservoir_id" name="reservoir_id" required><br>
 
-    <label>reservoir_id</label>
-    <input type="number" name="reservoir_id" required><br>
+        <label for="connections">Connections:</label>
+        <input type="number" id="connections" name="connections" required><br>
 
-    <button type="submit">Register Customer</button>
-</form>
+        <button type="submit">Register Customer</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

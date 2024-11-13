@@ -41,12 +41,13 @@ CREATE TABLE Bills (
     FOREIGN KEY (customer_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE Meter_Readings (
+-- Table for storing meter readings
+CREATE TABLE MeterReadings (
     reading_id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER,
-    reading REAL,
-    reading_date DATE,
-    FOREIGN KEY (customer_id) REFERENCES Users(user_id)
+    reading_date TEXT,
+    meter_reading REAL,
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
 );
 
 
@@ -91,6 +92,23 @@ CREATE INDEX idx_customer_sector ON Customer(sector_no);
 CREATE INDEX idx_locality_sector ON Locality(sector_no);
 CREATE INDEX idx_bills_customer ON Bills(customer_id);
 CREATE INDEX idx_reports_date ON Reports(date);
+
+-- Trigger to delete bills older than one year whenever a new bill is inserted
+CREATE TRIGGER delete_old_bills
+AFTER INSERT ON Bills
+BEGIN
+    DELETE FROM Bills
+    WHERE bill_date < DATE('now', '-1 year');
+END;
+
+-- Trigger to delete meter readings older than one year whenever a new reading is inserted
+CREATE TRIGGER delete_old_meter_readings
+AFTER INSERT ON MeterReadings
+BEGIN
+    DELETE FROM MeterReadings
+    WHERE reading_date < DATE('now', '-1 year');
+END;
+
 
 -- Optional: Insert default admin user
 INSERT INTO Users (username, password, role, name, contact_info) 

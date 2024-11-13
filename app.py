@@ -24,11 +24,18 @@ def init_db():
     
     conn.close()
 
+
 def get_customer_bills(customer_id):
     conn = get_db_connection()
     bills = conn.execute('SELECT * FROM Bills WHERE customer_id = ?', (customer_id,)).fetchall()
     conn.close()
     return bills
+
+def get_meter_readings(customer_id):
+    conn = get_db_connection()
+    readings = conn.execute('SELECT * FROM MeterReadings WHERE customer_id = ?', (customer_id,)).fetchall()
+    conn.close()
+    return readings
 
 
 # Database connection helper
@@ -83,7 +90,7 @@ init_db()
 def index():
     return redirect(url_for('login'))
 
-# Login route
+#login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -91,25 +98,33 @@ def login():
         password = request.form['password']
         role = request.form['role']
 
+        # Connect to the database and check credentials
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM Users WHERE username = ? AND role = ?', (username, role)).fetchone()
 
-        if user and user['password'] == password:
+        if user and (user['password']== password):
+            # Store basic user info in the session
             session['user_id'] = user['user_id']
             session['username'] = user['username']
             session['role'] = user['role']
-            
+
             if role == 'officer':
-                # Get officer's sector number and store it in the session
-                officer = conn.execute('SELECT sector_no FROM Officer WHERE officer_id = ?', (user['user_id'],)).fetchone()
+                # Fetch and store sector_no for officer
+                officer = conn.execute('SELECT sector_no FROM Officer WHERE name = ?', (user['name'],)).fetchone()
                 session['sector_no'] = officer['sector_no'] if officer else None
-            
+
+            elif role == 'customer':
+                # Retrieve and store customer_id for customer
+                customer = conn.execute('SELECT customer_id FROM Customer WHERE userid = ?', (user['user_id'],)).fetchone()
+                session['customer_id'] = customer['customer_id'] if customer else None
+
             conn.close()
             return redirect(url_for('dashboard'))
-        
-        conn.close()
-        flash('Invalid credentials. Please try again.')
+        else:
+            flash('Invalid credentials. Please try again.')
+            conn.close()
     return render_template('login.html')
+
 
 
 # Dashboard route
@@ -121,98 +136,121 @@ def dashboard():
     role = session.get('role')
     return render_template('dashboard.html', role=role)
 
-@app.route('/bills')
-def bills():
-    if 'user_id' not in session or session['role'] != 'customer':
-        return redirect(url_for('login'))
-    
-    customer_id = session['user_id']
-    bills = get_customer_bills(customer_id)
-    print(bills,"<--")
-    
-    return render_template('bills.html', bills=bills)
 
 @app.route('/register_customer', methods=['GET', 'POST'])
 def register_customer():
     if 'user_id' not in session or session['role'] != 'officer':
         return redirect(url_for('login'))
-
+    
     if request.method == 'POST':
-        # Collect customer details from the form
         username = request.form['username']
         password = request.form['password']
         name = request.form['name']
         contact_info = request.form['contact_info']
-        sector_no = request.form['sector_no']  # Example additional data
+        sector_no = request.form['sector_no']
+        reservoir_id = request.form['reservoir_id']
         connections = request.form['connections']
-        reservoir_id = request.form['reservoir_id'] 
-
-        # Connect to the database
+        
         conn = get_db_connection()
-        cursor = conn.cursor()
+        
+        # Check if username is unique
+        existing_user = conn.execute('SELECT * FROM Users WHERE username = ?', (username,)).fetchone()
+        if existing_user:
+            flash("Username already taken. Please choose another one.")
+            conn.close()
+            return render_template('register_customer.html')
+        
+        # Validate password (minimum 8 characters, includes letters and numbers)
+        if len(password) < 8 or not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password):
+            flash("Password must be at least 8 characters long and include both letters and numbers.")
+            conn.close()
+            return render_template('register_customer.html')
+        
+        # Validate contact info (basic check for phone number or email)
+        if not (contact_info.isdigit() and len(contact_info) >= 10) and "@" not in contact_info:
+            flash("Invalid contact information. Provide a valid phone number or email.")
+            conn.close()
+            return render_template('register_customer.html')
 
-        # Insert the customer into the Users table
-        cursor.execute(
-            'INSERT INTO Users (username, password, role, name, contact_info) VALUES (?, ?, ?, ?, ?)',
-            (username, password, 'customer', name, contact_info)
-        )
-        conn.commit()
-
-        # Get the new user's ID
-        user_id = cursor.lastrowid
-
-        # Insert the customer details into the Customer table with the new user_id
-        cursor.execute(
-            'INSERT INTO Customer (userid, name, sector_no, connections, reservoir_id) VALUES (?, ?, ?,?,?)',
-            (user_id, name, sector_no,connections, reservoir_id)
-        )
+        # Check connections (must be a positive integer)
+        try:
+            connections = int(connections)
+            if connections <= 0:
+                raise ValueError
+        except ValueError:
+            flash("Connections must be a positive integer.")
+            conn.close()
+            return render_template('register_customer.html')
+                
+        # Insert into Users table
+        conn.execute('INSERT INTO Users (username, password, role, name, contact_info) VALUES (?,?, ?, ?, ?)',
+                     (username, password, 'customer', name, contact_info))
+        user_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
+        
+        # Insert into Customer table
+        conn.execute('INSERT INTO Customer (name, sector_no,  reservoir_id, connections, userid) VALUES (?, ?, ?, ?, ?)',
+                     (name, sector_no, reservoir_id, connections, user_id))
+        
         conn.commit()
         conn.close()
-
-        flash('Customer registered successfully!')
+        
+        flash("Customer registered successfully.")
         return redirect(url_for('dashboard'))
     
     return render_template('register_customer.html')
 
+@app.route('/meter_readings')
+def meter_readings():
+    if 'user_id' not in session or session['role'] != 'customer':
+        return redirect(url_for('login'))
+
+    customer_id = session.get('customer_id')  # Make sure customer_id is stored in session upon login
+    readings = get_meter_readings(customer_id)
+    
+    return render_template('meter_readings.html', readings=readings)
 
 
 @app.route('/register_officer', methods=['GET', 'POST'])
 def register_officer():
-    # Check if the logged-in user is an admin
+    # Ensure only admins can access this route
     if 'user_id' not in session or session['role'] != 'admin':
         return redirect(url_for('login'))
-
+    
     if request.method == 'POST':
-        # Collect officer details from the form
         username = request.form['username']
         password = request.form['password']
         name = request.form['name']
-        contact_info = request.form['contact_info']
-        sector_no = request.form['sector_no']  # Additional information for officer
-
-        # Connect to the database
+        sector_no = request.form['sector_no']
+        
         conn = get_db_connection()
-        cursor = conn.cursor()
+        
+        # Check if username is unique
+        existing_user = conn.execute('SELECT * FROM Users WHERE username = ?', (username,)).fetchone()
+        if existing_user:
+            flash("Username already taken. Please choose another one.")
+            conn.close()
+            return render_template('register_officer.html')
+        
+        # Validate password (minimum 8 characters, includes letters and numbers)
+        if len(password) < 8 or not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password):
+            flash("Password must be at least 8 characters long and include both letters and numbers.")
+            conn.close()
+            return render_template('register_officer.html')
 
-        # Insert the officer into the Users table
-        cursor.execute(
-            'INSERT INTO Users (username, password, role, name, contact_info) VALUES (?, ?, ?, ?, ?)',
-            (username, password, 'officer', name, contact_info)
-        )
-        conn.commit()
+        
+        # Insert into Users table
+        conn.execute('INSERT INTO Users (username, password, role, name, contact_info) VALUES (?, ?, ?, ?, ?)',
+                     (username, password, 'officer', name, None))
+        user_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
 
-        # Get the new user's ID
-        user_id = cursor.lastrowid
+        # Insert into Officer table
+        conn.execute('INSERT INTO Officer (name, sector_no) VALUES (?, ?)',
+                     (name, sector_no))
 
-        # Insert the officer details into the Officer table
-        cursor.execute(
-            'INSERT INTO Officer (officer_id, name, sector_no) VALUES (?, ?, ?)',
-            (user_id, name, sector_no)
-        )
         conn.commit()
         conn.close()
-
-        flash('Officer registered successfully!')
+        
+        flash("Officer registered successfully.")
         return redirect(url_for('dashboard'))
     
     return render_template('register_officer.html')
@@ -400,6 +438,7 @@ def view_customers_in_sector():
         return redirect(url_for('login'))
 
     sector_no = session.get('sector_no')
+    print(sector_no,"sect")
     conn = get_db_connection()
 
     # Retrieve customers in the officer's sector
@@ -417,7 +456,6 @@ def view_customers_in_sector():
 def fill_meter_reading(customer_id):
     if 'user_id' not in session or session['role'] != 'officer':
         return redirect(url_for('login'))
-
     officer_id = session['user_id']
     conn = get_db_connection()
 
@@ -425,8 +463,8 @@ def fill_meter_reading(customer_id):
     customer = conn.execute('''
         SELECT * 
         FROM Customer 
-        WHERE customer_id = ? AND officer_id = ?
-    ''', (customer_id, officer_id)).fetchone()
+        WHERE customer_id = ? 
+    ''', (customer_id,)).fetchone()
 
     if not customer:
         flash("You do not have permission to access this customer.")
@@ -438,22 +476,30 @@ def fill_meter_reading(customer_id):
         reading_date = request.form['reading_date']
 
         # Insert meter reading
-        conn.execute('''
-            INSERT INTO MeterReadings (customer_id, reading_date, meter_reading)
-            VALUES (?, ?, ?)
-        ''', (customer_id, reading_date, meter_reading))
-        
-        # Calculate bill amount
-        bill_amount = calculate_bill(customer_id, meter_reading)
-        
-        # Insert new bill record
-        conn.execute('''
-            INSERT INTO Bills (customer_id, bill_date, amount_due, due_date)
-            VALUES (?, ?, ?, DATE('now', '+30 days'))
-        ''', (customer_id, reading_date, bill_amount))
-        
-        conn.commit()
-        conn.close()
+        try:
+         # Insert meter reading
+            conn.execute('''
+        INSERT INTO MeterReadings (customer_id, reading_date, meter_reading)
+        VALUES (?, ?, ?)
+    ''', (customer_id, reading_date, meter_reading))
+     
+    # Calculate bill amount
+            bill_amount = calculate_bill(meter_reading)
+     
+     # Insert new bill record
+            conn.execute('''
+         INSERT INTO Bills (customer_id, bill_date, amount_due, due_date)
+         VALUES (?, ?, ?, DATE('now', '+30 days'))
+     ''', (customer_id, reading_date, bill_amount))
+     
+            conn.commit()
+            print("Meter reading and bill calculated successfully.")
+        except sqlite3.Error as e:
+            conn.rollback()
+            flash(f"An error occurred: {e}")
+        finally:
+            conn.close()
+
 
         flash("Meter reading and bill calculated successfully.")
         return redirect(url_for('view_customers_in_sector'))
@@ -461,6 +507,15 @@ def fill_meter_reading(customer_id):
     conn.close()
     return render_template('fill_meter_reading.html', customer=customer)
 
+@app.route('/bills')
+def bills():
+    if 'user_id' not in session or session['role'] != 'customer':
+        return redirect(url_for('login'))
+    
+    customer_id = session.get('customer_id')  # Ensure customer_id is stored in session upon login
+    bills = get_customer_bills(customer_id)
+    
+    return render_template('bills.html', bills=bills)
 
 # Logout route
 @app.route('/logout')
